@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "WebGIS Pacitan"
+version = "1.0.0"
+id = "artifacts/webgis-pacitan"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21676
+
+[services.development]
+run = "pnpm --filter @workspace/webgis-pacitan run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/webgis-pacitan", "run", "build" ]
+publicDir = "artifacts/webgis-pacitan/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21676"
+BASE_PATH = "/"
