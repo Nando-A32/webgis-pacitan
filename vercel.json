@@ -1,0 +1,6 @@
+{
+  "buildCommand": "pnpm install && pnpm --filter @workspace/webgis-pacitan run build",
+  "outputDirectory": "artifacts/webgis-pacitan/dist/public",
+  "installCommand": "npm install -g pnpm@10 && pnpm install",
+  "framework": "vite"
+}
