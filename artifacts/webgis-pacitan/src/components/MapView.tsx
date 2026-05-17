@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { MapContainer, TileLayer, Marker, Tooltip, useMap, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Polyline, Tooltip, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { motion, AnimatePresence } from "framer-motion";
@@ -291,6 +291,18 @@ function MapControls({
   );
 }
 
+// ── FitRouteBounds ────────────────────────────────────────────────────────────
+
+function FitRouteBounds({ geometry }: { geometry: [number, number][] | null }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!geometry || geometry.length === 0) return;
+    const bounds = L.latLngBounds(geometry.map(([lat, lng]) => [lat, lng]));
+    map.fitBounds(bounds, { padding: [60, 60], maxZoom: 15, duration: 1.2 });
+  }, [geometry]); // eslint-disable-line react-hooks/exhaustive-deps
+  return null;
+}
+
 // ── main export ───────────────────────────────────────────────────────────────
 
 interface MapViewProps {
@@ -300,9 +312,14 @@ interface MapViewProps {
   searchQuery: string;
   searchResults: GeoFeature[];
   onSearchResults: (results: GeoFeature[]) => void;
+  routeGeometry?: [number, number][] | null;
+  onUserLocated?: (latlng: L.LatLng | null) => void;
 }
 
-export default function MapView({ visibleLayers, selectedPlace, onSelectPlace }: MapViewProps) {
+export default function MapView({
+  visibleLayers, selectedPlace, onSelectPlace,
+  routeGeometry, onUserLocated,
+}: MapViewProps) {
   const [locating, setLocating] = useState(false);
   const [userPos, setUserPos] = useState<L.LatLng | null>(null);
   const [basemap, setBasemap] = useState<BasemapType>("osm");
@@ -310,7 +327,8 @@ export default function MapView({ visibleLayers, selectedPlace, onSelectPlace }:
   const handleLocated = useCallback((latlng: L.LatLng) => {
     setUserPos(latlng);
     setLocating(false);
-  }, []);
+    onUserLocated?.(latlng);
+  }, [onUserLocated]);
 
   const handleLocateError = useCallback(() => {
     setLocating(false);
@@ -381,6 +399,34 @@ export default function MapView({ visibleLayers, selectedPlace, onSelectPlace }:
           );
         })}
 
+        {/* Route Polyline */}
+        {routeGeometry && routeGeometry.length > 1 && (
+          <>
+            {/* Shadow / outline */}
+            <Polyline
+              positions={routeGeometry}
+              color="rgba(0,0,0,0.35)"
+              weight={9}
+              opacity={1}
+            />
+            {/* Main route line */}
+            <Polyline
+              positions={routeGeometry}
+              color="#38b2d8"
+              weight={5}
+              opacity={0.9}
+            />
+            {/* Animated dash overlay */}
+            <Polyline
+              positions={routeGeometry}
+              color="white"
+              weight={2}
+              opacity={0.6}
+              dashArray="10 16"
+            />
+          </>
+        )}
+
         {/* GPS "You are here" marker */}
         {userPos && (
           <Marker
@@ -402,6 +448,8 @@ export default function MapView({ visibleLayers, selectedPlace, onSelectPlace }:
             </Tooltip>
           </Marker>
         )}
+
+        <FitRouteBounds geometry={routeGeometry ?? null} />
 
         <CoordDisplay />
         <GPSLocator locating={locating} onLocated={handleLocated} onError={handleLocateError} />

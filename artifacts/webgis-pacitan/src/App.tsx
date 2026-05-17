@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PlaceCategory, GeoFeature } from "@/data/pacitan-data";
 import { motion, AnimatePresence } from "framer-motion";
+import L from "leaflet";
 
 import LoadingScreen from "@/components/LoadingScreen";
 import MapView from "@/components/MapView";
@@ -11,6 +12,7 @@ import LayerControl from "@/components/LayerControl";
 import SearchBar from "@/components/SearchBar";
 import InfoPanel from "@/components/InfoPanel";
 import StatsBar from "@/components/StatsBar";
+import RoutePanel, { RouteInfo } from "@/components/RoutePanel";
 
 
 const queryClient = new QueryClient();
@@ -18,6 +20,8 @@ const queryClient = new QueryClient();
 function WebGIS() {
   const [loading, setLoading] = useState(true);
   const [selectedPlace, setSelectedPlace] = useState<GeoFeature | null>(null);
+  const [userPos, setUserPos] = useState<L.LatLng | null>(null);
+  const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
 
   const [visibleLayers, setVisibleLayers] = useState<Record<PlaceCategory, boolean>>({
     museum: true,
@@ -42,6 +46,8 @@ function WebGIS() {
         searchQuery={searchQuery}
         searchResults={searchResults}
         onSearchResults={setSearchResults}
+        routeGeometry={routeInfo?.geometry ?? null}
+        onUserLocated={setUserPos}
       />
 
       {/* ── Top UI Row ──────────────────────────────────────────────── */}
@@ -106,6 +112,12 @@ function WebGIS() {
             className="absolute left-3 md:left-4 top-20 z-[1000] pointer-events-auto flex flex-col gap-2"
           >
             <LayerControl visibleLayers={visibleLayers} onLayerChange={setVisibleLayers} />
+            <RoutePanel
+              userPos={userPos}
+              routeInfo={routeInfo}
+              onRouteFound={setRouteInfo}
+              onRouteClear={() => setRouteInfo(null)}
+            />
           </motion.div>
         )}
       </AnimatePresence>
