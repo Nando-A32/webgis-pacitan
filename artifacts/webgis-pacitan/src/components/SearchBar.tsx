@@ -14,23 +14,9 @@ export default function SearchBar({ query, onQueryChange, results, onSelectResul
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (query.length >= 2) {
-      const lower = query.toLowerCase();
-      const found = pacitanData.features.filter((f) => {
-        if (f.geometry.type !== "Point") return false;
-        const p = (f as PlaceFeature).properties;
-        return (
-          p.name.toLowerCase().includes(lower) ||
-          (p.description && p.description.toLowerCase().includes(lower)) ||
-          p.type_label.toLowerCase().includes(lower)
-        );
-      });
-      // We don't need to call onQueryChange results here; caller manages state
-    }
-  }, [query]);
+  useEffect(() => {}, [query]);
 
-  const filteredResults = query.length >= 2
+  const filteredResults = query.length >= 1
     ? pacitanData.features.filter((f) => {
         if (f.geometry.type !== "Point") return false;
         const p = (f as PlaceFeature).properties;
