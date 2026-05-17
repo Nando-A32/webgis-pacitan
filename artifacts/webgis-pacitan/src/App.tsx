@@ -35,6 +35,7 @@ function WebGIS() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<GeoFeature[]>([]);
+  const [flyToCoords, setFlyToCoords] = useState<[number, number] | null>(null);
 
   return (
     <div className="relative w-screen h-[100dvh] overflow-hidden bg-[#0a1828]">
@@ -48,6 +49,7 @@ function WebGIS() {
         onSearchResults={setSearchResults}
         routeGeometry={routeInfo?.geometry ?? null}
         onUserLocated={setUserPos}
+        flyToCoords={flyToCoords}
       />
 
       {/* ── Top UI Row ──────────────────────────────────────────────── */}
@@ -94,6 +96,10 @@ function WebGIS() {
                 onSelectResult={(place) => {
                   setSelectedPlace(place);
                   setSearchQuery("");
+                  if (place.geometry.type === "Point") {
+                    const [lng, lat] = (place as import("@/data/pacitan-data").PlaceFeature).geometry.coordinates;
+                    setFlyToCoords([lat, lng]);
+                  }
                 }}
                 results={searchResults}
               />

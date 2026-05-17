@@ -291,6 +291,17 @@ function MapControls({
   );
 }
 
+// ── FlyToLocation ─────────────────────────────────────────────────────────────
+
+function FlyToLocation({ coords }: { coords: [number, number] | null }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!coords) return;
+    map.flyTo(coords, 16, { duration: 1.0 });
+  }, [coords]); // eslint-disable-line react-hooks/exhaustive-deps
+  return null;
+}
+
 // ── FitRouteBounds ────────────────────────────────────────────────────────────
 
 function FitRouteBounds({ geometry }: { geometry: [number, number][] | null }) {
@@ -314,11 +325,12 @@ interface MapViewProps {
   onSearchResults: (results: GeoFeature[]) => void;
   routeGeometry?: [number, number][] | null;
   onUserLocated?: (latlng: L.LatLng | null) => void;
+  flyToCoords?: [number, number] | null;
 }
 
 export default function MapView({
   visibleLayers, selectedPlace, onSelectPlace,
-  routeGeometry, onUserLocated,
+  routeGeometry, onUserLocated, flyToCoords,
 }: MapViewProps) {
   const [locating, setLocating] = useState(false);
   const [userPos, setUserPos] = useState<L.LatLng | null>(null);
@@ -450,6 +462,7 @@ export default function MapView({
         )}
 
         <FitRouteBounds geometry={routeGeometry ?? null} />
+        <FlyToLocation coords={flyToCoords ?? null} />
 
         <CoordDisplay />
         <GPSLocator locating={locating} onLocated={handleLocated} onError={handleLocateError} />
