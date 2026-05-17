@@ -5,7 +5,6 @@ export type PlaceCategory =
   | "attraction"
   | "hospital"
   | "restaurant"
-  | "road"
   | "accommodation";
 
 export interface PlaceFeature {
@@ -27,19 +26,7 @@ export interface PlaceFeature {
   };
 }
 
-export interface RoadFeature {
-  type: "Feature";
-  geometry: {
-    type: "LineString";
-    coordinates: [number, number][];
-  };
-  properties: {
-    name: string;
-    road_type: "primary" | "secondary" | "tertiary" | "residential";
-  };
-}
-
-export type GeoFeature = PlaceFeature | RoadFeature;
+export type GeoFeature = PlaceFeature;
 
 export interface FeatureCollection {
   type: "FeatureCollection";
@@ -565,149 +552,6 @@ export const pacitanData: FeatureCollection = {
       },
     },
 
-    // ===== ROADS =====
-    {
-      type: "Feature",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [111.0900, -8.1960],
-          [111.0950, -8.1965],
-          [111.1000, -8.1970],
-          [111.1050, -8.1975],
-          [111.1100, -8.1980],
-          [111.1150, -8.1985],
-        ],
-      },
-      properties: {
-        name: "Jl. Ahmad Yani",
-        road_type: "primary",
-      },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [111.0920, -8.1940],
-          [111.0930, -8.1960],
-          [111.0940, -8.1985],
-          [111.0955, -8.2010],
-          [111.0970, -8.2040],
-          [111.1000, -8.2100],
-          [111.1020, -8.2172],
-        ],
-      },
-      properties: {
-        name: "Jl. Jend. Sudirman",
-        road_type: "primary",
-      },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [111.0880, -8.1970],
-          [111.0920, -8.1970],
-          [111.0970, -8.1975],
-          [111.1030, -8.1985],
-          [111.1070, -8.2000],
-          [111.1100, -8.2015],
-        ],
-      },
-      properties: {
-        name: "Jl. Gatot Subroto",
-        road_type: "secondary",
-      },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [111.1000, -8.1950],
-          [111.1000, -8.1975],
-          [111.1000, -8.2000],
-          [111.1000, -8.2030],
-          [111.1000, -8.2060],
-        ],
-      },
-      properties: {
-        name: "Jl. Diponegoro",
-        road_type: "secondary",
-      },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [110.9400, -8.2200],
-          [110.9450, -8.2220],
-          [110.9472, -8.2235],
-        ],
-      },
-      properties: {
-        name: "Jl. Menuju Pantai Klayar",
-        road_type: "tertiary",
-      },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [111.0300, -8.2100],
-          [111.0350, -8.2150],
-          [111.0387, -8.2193],
-        ],
-      },
-      properties: {
-        name: "Jl. Menuju Goa Gong",
-        road_type: "tertiary",
-      },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [111.0800, -8.1960],
-          [111.0850, -8.1962],
-          [111.0900, -8.1960],
-          [111.0950, -8.1958],
-          [111.1000, -8.1955],
-          [111.1050, -8.1952],
-          [111.1100, -8.1960],
-          [111.1150, -8.1975],
-          [111.1685, -8.1945],
-        ],
-      },
-      properties: {
-        name: "Jalan Lintas Selatan",
-        road_type: "primary",
-      },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [111.1050, -8.1975],
-          [111.1045, -8.2000],
-          [111.1040, -8.2040],
-          [111.1038, -8.2080],
-          [111.1040, -8.2120],
-          [111.1050, -8.2160],
-          [111.1073, -8.2172],
-        ],
-      },
-      properties: {
-        name: "Jl. Letjen Suprapto",
-        road_type: "secondary",
-      },
-    },
   ],
 };
 
@@ -726,6 +570,5 @@ export const categoryConfig: Record<PlaceCategory, { color: string; icon: string
   hotel: { color: "#f59e0b", icon: "🏨", label: "Hotel" },
   accommodation: { color: "#10b981", icon: "🏡", label: "Akomodasi" },
   restaurant: { color: "#f97316", icon: "🍽️", label: "Restoran" },
-  road: { color: "#6b7280", icon: "🛣️", label: "Jalan" },
   guest_house: { color: "#10b981", icon: "🏘️", label: "Guest House" },
 };

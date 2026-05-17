@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { MapContainer, TileLayer, Marker, Polyline, Tooltip, useMap, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Tooltip, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,7 +7,6 @@ import { Plus, Minus, Navigation, Home, Layers } from "lucide-react";
 import {
   pacitanData,
   PlaceFeature,
-  RoadFeature,
   PlaceCategory,
   GeoFeature,
   categoryConfig,
@@ -79,13 +78,6 @@ function createMarkerIcon(category: PlaceCategory, selected: boolean) {
     popupAnchor: [0, -(size / 2) - 4],
   });
 }
-
-const ROAD_STYLES: Record<string, { color: string; weight: number; opacity: number; dash?: string }> = {
-  primary:     { color: "#e74c3c", weight: 4.5, opacity: 0.85 },
-  secondary:   { color: "#f39c12", weight: 3.5, opacity: 0.8 },
-  tertiary:    { color: "#3498db", weight: 2.5, opacity: 0.75, dash: "8 5" },
-  residential: { color: "#95a5a6", weight: 1.5, opacity: 0.65, dash: "4 4" },
-};
 
 // ── CoordDisplay ──────────────────────────────────────────────────────────────
 
@@ -329,10 +321,6 @@ export default function MapView({ visibleLayers, selectedPlace, onSelectPlace }:
     return visibleLayers[(f as PlaceFeature).properties.category] !== false;
   });
 
-  const roadFeatures = visibleLayers["road"]
-    ? pacitanData.features.filter((f): f is RoadFeature => f.geometry.type === "LineString")
-    : [];
-
   const bm = BASEMAPS[basemap];
 
   return (
@@ -354,23 +342,6 @@ export default function MapView({ visibleLayers, selectedPlace, onSelectPlace }:
         attributionControl={false}
       >
         <TileLayer key={basemap} url={bm.url} attribution={bm.attribution} />
-
-        {/* Roads */}
-        {roadFeatures.map((f, idx) => {
-          const type = f.properties.road_type ?? "tertiary";
-          const style = ROAD_STYLES[type] ?? ROAD_STYLES.tertiary;
-          const positions = f.geometry.coordinates.map(([lng, lat]) => [lat, lng] as [number, number]);
-          return (
-            <Polyline
-              key={`road-${idx}`}
-              positions={positions}
-              color={style.color}
-              weight={style.weight}
-              opacity={style.opacity}
-              dashArray={style.dash}
-            />
-          );
-        })}
 
         {/* Place Markers */}
         {pointFeatures.map((f) => {

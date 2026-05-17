@@ -15,12 +15,10 @@ const CATEGORIES: PlaceCategory[] = [
   "hotel",
   "accommodation",
   "restaurant",
-  "road",
 ];
 
 function getCategoryCount(cat: PlaceCategory): number {
   return pacitanData.features.filter((f) => {
-    if (cat === "road") return f.geometry.type === "LineString";
     if (f.geometry.type !== "Point") return false;
     const p = (f as PlaceFeature).properties;
     return p.category === cat;

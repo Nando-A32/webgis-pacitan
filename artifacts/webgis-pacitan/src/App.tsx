@@ -11,7 +11,7 @@ import LayerControl from "@/components/LayerControl";
 import SearchBar from "@/components/SearchBar";
 import InfoPanel from "@/components/InfoPanel";
 import StatsBar from "@/components/StatsBar";
-import MapLegend from "@/components/MapLegend";
+
 
 const queryClient = new QueryClient();
 
@@ -26,7 +26,6 @@ function WebGIS() {
     attraction: true,
     hospital: true,
     restaurant: true,
-    road: true,
     accommodation: true,
   });
 
@@ -107,7 +106,6 @@ function WebGIS() {
             className="absolute left-3 md:left-4 top-20 z-[1000] pointer-events-auto flex flex-col gap-2"
           >
             <LayerControl visibleLayers={visibleLayers} onLayerChange={setVisibleLayers} />
-            <MapLegend />
           </motion.div>
         )}
       </AnimatePresence>
